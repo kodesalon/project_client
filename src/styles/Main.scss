@@ -1,0 +1,79 @@
+@import './utils.scss';
+
+.main_container {
+  display: grid;
+  grid-template-rows: 60px 1fr 3fr;
+  grid-template-columns: 2fr 3fr 2fr;
+  gap: 1px;
+  background-color: rgba(194, 191, 248, 0.6);
+  height: 100%;
+  width: 100%;
+  position: absolute;
+
+  header {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+}
+
+.main_nav {
+  grid-column: 1;
+  grid-row: 1/4;
+  padding-top: 12vh;
+  background-color: white;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    // justify-content: flex-end;
+  }
+
+  li {
+    width: 36%;
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 1.4rem;
+    font-weight: 500;
+  }
+
+  li:hover {
+    cursor: pointer;
+    background-color: rgba(194, 191, 248, 0.4);
+    border-radius: 20px;
+  }
+}
+header {
+  background-color: white;
+  grid-column: 2;
+  grid-row: 1;
+}
+.main_board_create {
+  background-color: white;
+  width: 100%;
+  grid-column: 2;
+  grid-row: 2;
+  @include center(row);
+  justify-content: flex-start;
+}
+
+.main_board_list {
+  grid-column: 2;
+  grid-row: 3;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.empty {
+  background-color: white;
+  grid-column: 3;
+  grid-row: 1/4;
+}
