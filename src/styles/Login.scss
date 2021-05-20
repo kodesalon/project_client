@@ -1,0 +1,20 @@
+@import './utils.scss';
+
+.login_content {
+  display: flex;
+  flex-direction: column;
+  width: 20vw;
+}
+
+.login_title {
+  @include title;
+}
+.login_input {
+  @include inputBox(4);
+}
+.login_btn-signin {
+  @include button;
+}
+.login_btn-signin:hover {
+  @include buttonHover;
+}
