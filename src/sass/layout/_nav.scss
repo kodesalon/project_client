@@ -1,0 +1,6 @@
+@mixin nav {
+  grid-column: 1;
+  grid-row: 1/4;
+  padding-top: 12vh;
+  background-color: white;
+}
