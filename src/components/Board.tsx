@@ -1,5 +1,3 @@
-import '../styles/Board.scss';
-
 const Board = () => {
   return (
     <div className='board_container'>

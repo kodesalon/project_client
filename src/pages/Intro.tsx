@@ -1,5 +1,4 @@
 import Login from '../components/Login';
-import '../styles/Intro.scss';
 
 const Intro = () => {
   return (
