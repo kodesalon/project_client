@@ -1,0 +1,48 @@
+.span_constraints {
+  color: $light-color;
+}
+
+.signup_container {
+  @include center(row);
+  height: 100vh;
+}
+.signup_content {
+  @include flex-direction-column;
+  width: 26vw;
+}
+
+.signup_title {
+  @include title;
+}
+
+.signup_input {
+  @include default-input(6px);
+  margin-bottom: 4px;
+}
+
+.signup_phoneNum {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.signup_input_phoneNum {
+  @include default-input(6px);
+  width: 26%;
+  height: 1.5rem;
+}
+
+// input type이 number일때, 사이드에 있는 화살표 버튼 제거
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.signup_btn-signup {
+  @include default-button(1.1rem);
+  margin-top: 20px;
+  padding: 10px 0;
+}

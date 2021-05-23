@@ -1,0 +1,18 @@
+.login_content {
+  @include flex-direction-column;
+  width: 20vw;
+}
+
+.login_title {
+  @include title;
+}
+
+.login_input {
+  @include default-input(4px);
+}
+
+.login_btn-signin {
+  @include default-button(1rem);
+  margin: 8px 0;
+  padding: 10px 0;
+}
