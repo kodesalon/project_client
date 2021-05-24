@@ -1,0 +1,11 @@
+@mixin default-button($font-size) {
+  background-color: $primary-color;
+  color: white;
+  border-radius: 20px;
+  border: 0;
+  font-size: $font-size;
+  &:hover {
+    background-color: $secondary-color;
+    cursor: pointer;
+  }
+}

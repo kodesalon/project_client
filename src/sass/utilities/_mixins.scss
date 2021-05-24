@@ -1,0 +1,25 @@
+@mixin center($direction) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: $direction;
+  // 따로 width, height 설정 필요
+}
+
+@mixin flex-direction-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin title {
+  align-self: center;
+  font-size: 1.6rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+@mixin createBoard {
+  outline: none !important;
+  border: 2px solid $background-color;
+  border-radius: 4px;
+}

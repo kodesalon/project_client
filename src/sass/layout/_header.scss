@@ -1,0 +1,8 @@
+@mixin header {
+  background-color: white;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
