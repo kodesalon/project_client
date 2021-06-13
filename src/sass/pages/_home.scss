@@ -2,19 +2,10 @@
   @include default-grid;
 }
 
-.home_board_creator {
-  @include center(row);
-  background-color: white;
-  width: 100%;
-  grid-column: 2;
-  grid-row: 2;
-  justify-content: flex-start;
-}
-
 .home_board_list {
   @include flex-direction-column;
   grid-column: 2;
-  grid-row: 3;
+  grid-row: 2;
   overflow: auto;
   align-items: center;
 }
