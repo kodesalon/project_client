@@ -4,14 +4,18 @@ import Intro from './pages/Intro';
 import Home from './pages/Home';
 import MyPage from './pages/MyPage';
 import SignUp from './components/SignUp';
+
+import BoardCreator from './pages/BoardCreator';
+
 const Routes = () => {
   return (
     <Router>
       <Switch>
         <Route exact path='/' component={Intro} />
         <Route path='/home' component={Home} />
-        <Route path='/myPage' component={MyPage} />
-        <Route path='/signUp' component={SignUp} />
+        <Route path='/write' component={BoardCreator} />
+        <Route path='/mypage' component={MyPage} />
+        <Route path='/signup' component={SignUp} />
       </Switch>
     </Router>
   );
