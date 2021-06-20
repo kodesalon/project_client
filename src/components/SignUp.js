@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { changeSignUpInput } from '../modules/user';
-import { PASSWORD_REGEX, EMAIL_REGEX, PHONE_REGEX } from '../util/constant';
+import * as JOIN from 'util/constants';
+import InputBox from 'util/InputBox';
 
 const SignUp = () => {
-  // 휴대폰 번호를 임의로 담아두는 건데 store에서 관리할 필요가 있을까?
-
   const [error, setError] = useState('');
   const [isColor, setIsColor] = useState({
     alias: true,
@@ -14,9 +12,9 @@ const SignUp = () => {
     email: true,
     phone: true,
   });
-  const [Validation, setValidation] = useState({
-    alias: '아이디는 영문자로 시작하고 숫자가 포함되야 합니다.(4글자 ~ 15글자)',
-    pwd: '소문자, 대문자, 특수문자 1개이상(8글자 ~ 16글자)',
+  const [validation, setValidation] = useState({
+    alias: JOIN.ALIAS_GUIDE,
+    pwd: JOIN.PWD_GUIDE,
     pwdCheck: '',
     name: '',
     email: '',
@@ -31,6 +29,7 @@ const SignUp = () => {
     email: '',
     phone: '',
   });
+
   useEffect(() => {
     if (signUpInput.phone.length === 10) {
       setSignUpInput((prev) => ({
@@ -45,166 +44,153 @@ const SignUp = () => {
           .replace(/-/g, '')
           .replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'),
       }));
-
-      //setInputValue(inputValue.replace(/-/g, '').replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'));
     }
   }, [signUpInput.phone]);
-  const handleOnChange = (e) => {
-    const { name, value } = e.target;
 
-    setSignUpInput((prev) => ({ ...prev, [name]: value }));
-    validateInput(name, value);
+  const handleOnChange = (name, value) => {
+    const signUpItems = ['alias', 'pwd', 'pwdCheck', 'name', 'email', 'phone'];
+    const validationFunctions = {
+      alias: validateAlias,
+      pwd: validatePwd,
+      pwdCheck: validatePwdCheck,
+      name: validateName,
+      email: validateEmail,
+      phone: validatePhone,
+    };
+
+    signUpItems
+      .filter((elem) => elem === name)
+      .forEach((key) => validationFunctions[key](key, value));
   };
 
-  const validateInput = (key, value) => {
+  const setIncorrectResult = (key, guide) => {
+    setValidation((prev) => ({
+      ...prev,
+      [key]: guide,
+    }));
+    setIsColor((prev) => ({ ...prev, [key]: true }));
+  };
+
+  const setCorrectResult = (key) => {
+    setValidation((prev) => ({
+      ...prev,
+      [key]: JOIN.CORRECT_SIGNUP_INPUT,
+    }));
+    setIsColor((prev) => ({ ...prev, [key]: false }));
+  };
+
+  const aliasTest = {
+    checkFirstCharacter: (value) =>
+      JOIN.ALIAS_FIRST_CHARACTER_REGEX.test(value),
+
+    checkAllowedCharacter: (value) =>
+      JOIN.ALIAS_ALLOWED_CHARACTER_TYPE_REGEX.test(value),
+  };
+  const passwordTest = {
+    checkAllowedCharacter: (value) =>
+      new RegExp(JOIN.PASSWORD_REGEX).test(value),
+  };
+  const nameTest = {
+    checkSpace: (value) => new RegExp(JOIN.NAME_SPACE_REGEX).test(value),
+    checkCharacter: (value) => new RegExp(JOIN.NAME_HANGUL_REGEX).test(value),
+  };
+  const emailTest = {
+    checkForm: (value) => JOIN.EMAIL_REGEX.test(value),
+  };
+  const phoneTest = {
+    checkNumber: (value) => JOIN.PHONE_REGEX.test(value),
+  };
+
+  const validateAlias = (key, value) => {
+    if (!aliasTest.checkFirstCharacter(value)) {
+      setIncorrectResult(key, JOIN.ALIAS_GUIDE_START_WITH_ENGLISH);
+      return;
+    }
+    if (!aliasTest.checkAllowedCharacter(value)) {
+      setIncorrectResult(key, JOIN.ALIAS_GUIDE_UNION_ENGLISH_AND_NUMBER);
+      return;
+    } else {
+      setCorrectResult(key);
+    }
+  };
+
+  const validatePwd = (key, value) => {
+    if (!passwordTest.checkAllowedCharacter(value)) {
+      // 특수문자 허용 범위 물어보기
+      setIncorrectResult(key, JOIN.PWD_GUIDE_MORE_THAN_ONE_EACH_CHARACTER);
+      return;
+    }
+    if (
+      value.length < JOIN.PWD_MINIMUM_LENGTH ||
+      value.length > JOIN.PWD_MAXIMUM_LENGTH
+    ) {
+      console.log(value.length);
+      setIncorrectResult(key, JOIN.PWD_GUIDE_LENGTH);
+      return;
+    } else {
+      setCorrectResult(key);
+    }
+
+    if (value !== signUpInput.pwdCheck) {
+      setIncorrectResult('pwdCheck', JOIN.PWD_GUIDE_UNEQUAL_EACH_OTHER);
+      return;
+    } else {
+      setCorrectResult('pwdCheck');
+    }
+  };
+
+  const validatePwdCheck = (key, value) => {
+    console.log(value);
     console.log(signUpInput);
-
-    if (key === 'alias') {
-      if (!/^[a-zA-Z]/g.test(value)) {
-        setValidation((prev) => ({
-          ...prev,
-          [key]: '영문으로 시작해야 합니다.',
-        }));
-        setIsColor({ [key]: true });
-      } else if (!/^[a-zA-Z](?=.*\d)[a-zA-Z0-9]{3,14}$/g.test(value)) {
-        setValidation((prev) => ({
-          ...prev,
-          [key]: '4 ~ 15자의 영문자와 숫자 조합이어야 합니다.',
-        }));
-        setIsColor({ [key]: true });
-      } else {
-        setValidation((prev) => ({
-          ...prev,
-          [key]: '멋진 아이디네요!',
-        }));
-        setIsColor({ [key]: false });
-      }
+    if (value !== signUpInput.pwd) {
+      setIncorrectResult(key, JOIN.PWD_GUIDE_UNEQUAL_EACH_OTHER);
       return;
+    } else {
+      setCorrectResult(key);
     }
+  };
 
-    if (key === 'pwd') {
-      if (!PASSWORD_REGEX.test(value)) {
-        console.log(value);
-        // 특수문자 허용 범위 물어보기
-        setValidation((prev) => ({
-          ...prev,
-          [key]:
-            '영어 대문자, 소문자, 특수문자, 숫자가 1자 이상 있어야 합니다.',
-        }));
-        setIsColor((prev) => ({ ...prev, [key]: true }));
-        return;
-      } else {
-        if (value.length < 8 || value.length > 16) {
-          console.log(value.length);
-          setValidation((prev) => ({
-            ...prev,
-            [key]: '8 ~ 16자이어야 합니다',
-          }));
-          setIsColor((prev) => ({ ...prev, [key]: true }));
-        } else {
-          setValidation((prev) => ({
-            ...prev,
-            [key]: '☺︎',
-          }));
-          setIsColor((prev) => ({ ...prev, [key]: false }));
-        }
-        if (signUpInput.pwdCheck !== value) {
-          setValidation((prev) => ({
-            ...prev,
-            pwdCheck: '비밀번호가 일치하지 않습니다.',
-          }));
-          setIsColor((prev) => ({ ...prev, pwdCheck: true }));
-        } else {
-          setValidation((prev) => ({
-            ...prev,
-            pwdCheck: '☺︎',
-          }));
-          setIsColor((prev) => ({ ...prev, pwdCheck: false }));
-        }
-        return;
-      }
-    }
-
-    if (key === 'pwdCheck') {
+  const validateName = (key, value) => {
+    if (!nameTest.checkCharacter(value)) {
       console.log(value);
-      console.log(signUpInput);
-      if (value !== signUpInput.pwd) {
-        setValidation((prev) => ({
-          ...prev,
-          [key]: '비밀번호가 일치하지 않습니다.',
-        }));
-        setIsColor((prev) => ({ ...prev, [key]: true }));
-      } else {
-        setValidation((prev) => ({
-          ...prev,
-          [key]: '☺︎',
-        }));
-        setIsColor((prev) => ({ ...prev, [key]: false }));
-      }
+      console.log(nameTest.checkCharacter(value));
+      setIncorrectResult(key, JOIN.NAME_GUIDE_ONLY_HANGUL);
       return;
     }
+    if (nameTest.checkSpace(value)) {
+      setIncorrectResult(key, JOIN.NAME_GUIDE_REMOVE_SPACE);
+      return;
+    }
+    if (
+      value.length < JOIN.NAME_MINIMUM_LENGTH ||
+      value.length > JOIN.NAME_MAXIMUM_LENGTH
+    ) {
+      setIncorrectResult(key, JOIN.NAME_GUIDE_NAME_LENGTH);
+      return;
+    } else {
+      setCorrectResult(key);
+    }
+  };
 
-    if (key === 'name') {
-      if (/\s/g.test(value)) {
-        setValidation((prev) => ({
-          ...prev,
-          [key]: '공백을 제거해야 합니다.',
-        }));
-        setIsColor((prev) => ({ ...prev, [key]: true }));
-        return;
-      }
-      if (value.length < 2 || value.length > 18) {
-        setValidation((prev) => ({
-          ...prev,
-          [key]: '이름은 2 ~ 18자 사이어야 합니다.',
-        }));
-        setIsColor((prev) => ({ ...prev, [key]: true }));
-      } else {
-        setValidation((prev) => ({
-          ...prev,
-          [key]: '☺︎',
-        }));
-        setIsColor((prev) => ({ ...prev, [key]: false }));
-      }
+  const validateEmail = (key, value) => {
+    if (!emailTest.checkForm(value)) {
+      setIncorrectResult(key, JOIN.EMAIL_GUIDE_FORM);
       return;
+    } else {
+      setCorrectResult(key);
     }
-    if (key === 'email') {
-      if (!EMAIL_REGEX.test(value)) {
-        setValidation((prev) => ({
-          ...prev,
-          [key]: '이메일 형식이 맞지 않습니다.',
-        }));
-        setIsColor((prev) => ({ ...prev, [key]: true }));
-      } else {
-        setValidation((prev) => ({
-          ...prev,
-          [key]: '☺︎',
-        }));
-        setIsColor((prev) => ({ ...prev, [key]: false }));
-      }
-      return;
-    }
+  };
 
-    if ((key = 'phone')) {
-      if (!PHONE_REGEX.test(value)) {
-        setValidation((prev) => ({
-          ...prev,
-          [key]: '숫자만 입력이 가능합니다.',
-        }));
-        setIsColor((prev) => ({ ...prev, [key]: true }));
-      } else if (value.length > 11) {
-        setValidation((prev) => ({
-          ...prev,
-          [key]: '☺︎',
-        }));
-        setIsColor((prev) => ({ ...prev, [key]: false }));
-      } else {
-        setValidation((prev) => ({
-          ...prev,
-          [key]: '',
-        }));
-      }
+  const validatePhone = (key, value) => {
+    if (value.length > JOIN.PHONE_MAXIMUM_LENGTH) {
+      setIncorrectResult(key, JOIN.PHONE_GUIDE_LENGTH);
       return;
+    }
+    if (!phoneTest.checkNumber(value)) {
+      setIncorrectResult(key, JOIN.PHONE_GUIDE_ONLY_NUMBER);
+      return;
+    } else {
+      setCorrectResult(key);
     }
   };
 
@@ -217,83 +203,93 @@ const SignUp = () => {
       {/* <div className='signup_content'> */}
       <form onSubmit={onSignUp} className='signup_content'>
         <div className='signup_title'>회 원 가 입</div>
-        <input
+
+        <InputBox
           className='signup_input'
           placeholder='아이디'
-          type='text'
           value={signUpInput.alias}
           name='alias'
-          onChange={(e) => handleOnChange(e, 'alias')}
+          setInput={setSignUpInput}
+          changeInput={handleOnChange}
         />
         <div className={'input_constraints' + (isColor.alias ? ' color' : '')}>
-          {Validation.alias}
+          {validation.alias}
         </div>
-        <input
+        <InputBox
           className='signup_input'
           placeholder='비밀번호'
           type='text'
           value={signUpInput.pwd}
           name='pwd'
-          onChange={handleOnChange}
+          setInput={setSignUpInput}
+          changeInput={handleOnChange}
         />
-        <div className={'input_constraints' + (isColor.pwd ? ' color' : '')}>
-          {Validation.pwd}
-        </div>
 
-        <input
+        <div className={'input_constraints' + (isColor.pwd ? ' color' : '')}>
+          {validation.pwd}
+        </div>
+        <InputBox
           className='signup_input'
           placeholder='비밀번호 확인'
           type='text'
           value={signUpInput.pwdCheck}
           name='pwdCheck'
-          onChange={handleOnChange}
+          setInput={setSignUpInput}
+          changeInput={handleOnChange}
         />
         <div
           className={'input_constraints' + (isColor.pwdCheck ? ' color' : '')}
         >
-          {Validation.pwdCheck}
+          {validation.pwdCheck}
         </div>
 
-        <input
+        <InputBox
           className='signup_input'
           placeholder='이름'
           type='text'
           value={signUpInput.name}
           name='name'
-          onChange={handleOnChange}
+          setInput={setSignUpInput}
+          changeInput={handleOnChange}
         />
         <div className={'input_constraints' + (isColor.name ? ' color' : '')}>
-          {Validation.name}
+          {validation.name}
         </div>
 
-        <input
+        <InputBox
           className='signup_input'
           placeholder='이메일'
           type='email'
           value={signUpInput.email}
           name='email'
-          onChange={handleOnChange}
+          setInput={setSignUpInput}
+          changeInput={handleOnChange}
         />
         <div className={'input_constraints' + (isColor.email ? ' color' : '')}>
-          {Validation.email}
+          {validation.email}
         </div>
-
-        <input
-          className='signup_input'
-          placeholder='휴대폰'
-          type='text'
-          value={signUpInput.phone}
-          name='phone'
-          onChange={handleOnChange}
-        />
+        <div className='signup_phone_container'>
+          <label className='signup_phone_label'>
+            <input type='checkbox' name='color' value='blue' />
+            선택
+          </label>
+          <InputBox
+            className='signup_input signup_phone'
+            placeholder='휴대폰'
+            type='text'
+            value={signUpInput.phone}
+            name='phone'
+            setInput={setSignUpInput}
+            changeInput={handleOnChange}
+          />
+        </div>
         <div className={'input_constraints' + (isColor.phone ? ' color' : '')}>
-          {Validation.phone}
+          {validation.phone}
         </div>
-
         <input className='signup_btn-signup' type='submit' value='가 입' />
       </form>
       {/* </div> */}
     </section>
   );
 };
-export default SignUp;
+export default React.memo(SignUp);
