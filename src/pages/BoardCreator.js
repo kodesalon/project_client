@@ -1,5 +1,5 @@
-import Nav from '../components/Nav';
-import Header from '../components/Header';
+import Nav from 'components/Nav';
+import Header from 'components/Header';
 
 const BoardCreator = () => {
   return (

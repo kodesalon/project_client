@@ -1,7 +1,7 @@
 // import BoardCreator from '../components/BoardCreator';
-import Boards from '../components/Boards';
-import Nav from '../components/Nav';
-import Header from '../components/Header';
+import Boards from 'components/Boards';
+import Nav from 'components/Nav';
+import Header from 'components/Header';
 
 const Home = () => {
   return (
