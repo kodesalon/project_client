@@ -1,7 +1,8 @@
 .board_container {
   // 각각의 Board 간격에 대한 수정 필요
   background-color: white;
-  margin: 1px;
-  width: 96%;
-  padding: 20px 10px;
+  margin: 1px 1px;
+  width: 100%;
+  height: fit-content;
+  padding: 20px 0;
 }

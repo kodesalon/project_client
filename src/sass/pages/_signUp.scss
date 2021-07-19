@@ -1,8 +1,10 @@
 .input_constraints {
-  color: $light-color;
+  color: #c43131;
   font-size: 0.8em;
   margin-bottom: 6px;
+  text-align: center;
 }
+
 .color {
   color: red;
 }
@@ -19,7 +21,11 @@
 .signup_title {
   @include title;
 }
-
+.signup_input_wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .signup_input {
   @include default-input(6px, 2px);
   margin-bottom: 4px;
@@ -41,7 +47,6 @@
   width: 82%;
 }
 
-/
 // input type이 number일때, 사이드에 있는 화살표 버튼 제거
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

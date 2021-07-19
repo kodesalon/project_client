@@ -4,6 +4,8 @@
   font-size: 1.1rem;
   border: {
     radius: $radius;
-    border-color: $cool-grey;
+    color: $cool-grey;
+    width: 1px;
+    style: solid;
   }
 }
