@@ -21,6 +21,22 @@
         .nav_link {
           @include nav-link;
         }
+
+        .temp_logout_btn {
+          background-color: white;
+          border: 0;
+          font-weight: 500;
+          font-size: 1.1rem;
+          width: 54%;
+          padding: 14px 40px 10px 0px;
+          margin-right: 60px;
+          margin-top: 10px;
+          &:hover {
+            cursor: pointer;
+            background-color: $background-color;
+            border-radius: 20px;
+          }
+        }
       }
     }
   }

@@ -1,6 +1,14 @@
 import Login from 'components/Login';
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 const Intro = () => {
+  const history = useHistory();
+  useEffect(() => {
+    const refreshToken = localStorage.getItem('rToken');
+    if (refreshToken) {
+      history.push('/home');
+    }
+  }, []);
   return (
     <>
       <section className='intro_img'></section>

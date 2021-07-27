@@ -1,25 +1,22 @@
 import client from 'apis/client';
-
+import axios from 'axios';
 export const postMemberLogin = ({ alias, password }) => {
   console.log(alias, password);
   return client
-    .post('/api/v1/members/login', {
+    .post('/api/v1/auth/login', {
       alias,
       password,
     })
     .then((res) => {
-      if (res.message) {
-        return res.message;
-      } else {
-        localStorage.setItem('id', res.data.memberId);
-        return 'success';
-      }
+      console.log(res);
+
+      return res.data;
     })
     .catch((error) => {
       if (error.response) {
         // 요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.
-        console.log(error.response.data); // {timestamp: "2021-07-05T15:57:37.600+00:00", status: 400, error: "Bad Request", message: "", path: "/api/v1/members/login"}
-        console.log(error.response.status);
+        console.log(error.response.data); // {code: "M001"}
+        console.log(error.response.status); // 400
         return error.response.data;
       } else if (error.request) {
         // 요청이 이루어 졌으나 응답을 받지 못했습니다.
@@ -34,14 +31,16 @@ export const postMemberLogin = ({ alias, password }) => {
     });
 };
 
-export const postMemberSignUp = ({ alias, password, name, email, phone }) => {
-  return client
-    .post('/api/v1/members', {
+export const postMemberSignUp = ({ alias, password, name, email, phone, createdDateTime }) => {
+  console.log(createdDateTime);
+  return axios
+    .post('http://localhost:8080/api/v1/members/join', {
       alias,
       password,
       name,
       email,
       phone,
+      createdDateTime,
     })
     .then((res) => {
       console.log(res);
@@ -64,7 +63,7 @@ export const postMemberSignUp = ({ alias, password, name, email, phone }) => {
 // 조회는 서버측에서 Path Variable 을 바꾼거 같음?
 export const getMemberSelect = ({ memberId }) => {
   return client
-    .get(`/api/v1/members/${memberId}`)
+    .get(`/api/v1/members`)
     .then((res) => {
       console.log(res);
       return res;
@@ -88,6 +87,28 @@ export const putMemberPasswordUpdate = ({ password }) => {
     .put(`/api/v1/members/password`, {
       password,
     })
+    .then((res) => {
+      console.log(res);
+      return res;
+    })
+    .catch((error) => {
+      if (error.response) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        return error.response.data;
+      } else if (error.request) {
+        console.log(error.request);
+        return 'Server Error';
+      } else {
+        console.log('Error', error.message);
+      }
+    });
+};
+
+// 회원 탈퇴? 요청에 아무것도 필요 없나??
+export const deleteMember = () => {
+  return client
+    .delete('api/v1/members')
     .then((res) => {
       console.log(res);
       return res;

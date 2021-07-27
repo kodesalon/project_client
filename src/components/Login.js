@@ -4,7 +4,7 @@ import * as memberAPI from 'apis/member';
 import Modal from 'common/Modal';
 import { UserInfoContext } from 'contexts/UserInfoContextProvider';
 import { useHistory } from 'react-router-dom';
-
+import * as MSG from 'util/constForResponse';
 const Login = () => {
   const [alias, setAlias] = useState('');
   const [password, setPassword] = useState('');
@@ -16,12 +16,14 @@ const Login = () => {
     e.preventDefault();
     memberAPI.postMemberLogin({ alias, password }).then((res) => {
       console.log(res);
-      if (res) {
-        setServerMessage(res);
-      }
-      if (res === 'success') {
-        // setMemberId(res.data.memberId); - localstorage에 저장할꺼니까 필요없나?
-        //  localStorage.setItem('id', res.data.memberId);
+      if (res.code) {
+        console.log(res.code);
+        setServerMessage(MSG[res.code]);
+      } else {
+        localStorage.setItem('aToken', res.accessToken);
+        localStorage.setItem('rToken', res.refreshToken);
+        localStorage.setItem('memberId', res.memberId);
+        setMemberId(res.memberId);
         history.push('/home');
       }
     });
@@ -29,9 +31,7 @@ const Login = () => {
   const handleOnClose = () => {
     setServerMessage('');
   };
-  useEffect(() => {
-    console.log(memberId);
-  }, []);
+
   return (
     <form className='login_content' onSubmit={submitLogin}>
       <span className='login_title'>로 그 인</span>
@@ -56,9 +56,7 @@ const Login = () => {
       <button className='login_btn-signin' type='submit'>
         LOGIN
       </button>
-      {serverMessage && (
-        <Modal content={serverMessage} handleOnClose={handleOnClose} />
-      )}
+      {serverMessage && <Modal content={serverMessage} handleOnClose={handleOnClose} />}
     </form>
   );
 };
