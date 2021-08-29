@@ -1,5 +1,12 @@
-.span_constraints {
-  color: $light-color;
+.input_constraints {
+  color: #c43131;
+  font-size: 0.8em;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.color {
+  color: red;
 }
 
 .signup_container {
@@ -14,22 +21,30 @@
 .signup_title {
   @include title;
 }
-
-.signup_input {
-  @include default-input(6px);
-  margin-bottom: 4px;
-}
-
-.signup_phoneNum {
+.signup_input_wrapper {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 }
+.signup_input {
+  @include default-input(6px, 2px);
+  margin-bottom: 4px;
+  height: 2em;
+}
+.signup_phone_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.signup_phone_label {
+  color: $primary-color;
 
-.signup_input_phoneNum {
-  @include default-input(6px);
-  width: 26%;
-  height: 1.5rem;
+  input[type='checkbox'] {
+    filter: hue-rotate(-0.92turn) saturate(1);
+  }
+}
+.signup_phone {
+  width: 82%;
 }
 
 // input type이 number일때, 사이드에 있는 화살표 버튼 제거

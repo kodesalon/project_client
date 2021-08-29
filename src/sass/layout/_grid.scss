@@ -1,6 +1,6 @@
 @mixin default-grid {
   display: grid;
-  grid-template-rows: 60px 1fr 3fr;
+  grid-template-rows: 60px 3fr;
   grid-template-columns: 2fr 3fr 2fr;
   gap: 1px;
   background-color: $background-color;
@@ -15,7 +15,28 @@
       @include nav-ul;
 
       .nav_li {
-        @include nav-li;
+        @include flex-direction-column;
+        align-items: flex-end;
+
+        .nav_link {
+          @include nav-link;
+        }
+
+        .temp_logout_btn {
+          background-color: white;
+          border: 0;
+          font-weight: 500;
+          font-size: 1.1rem;
+          width: 54%;
+          padding: 14px 40px 10px 0px;
+          margin-right: 60px;
+          margin-top: 10px;
+          &:hover {
+            cursor: pointer;
+            background-color: $background-color;
+            border-radius: 20px;
+          }
+        }
       }
     }
   }
